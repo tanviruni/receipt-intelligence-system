@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Receipt {
+  id          String     @id @default(cuid())
+  imageUrl    String
+  rawOcrText  String?
+  vendorName  String?
+  date        String?
+  totalAmount Float?
+  currency    String?    @default("EUR")
+  // PENDING | DONE | FAILED
+  status      String     @default("PENDING")
+  createdAt   DateTime   @default(now())
+  items       LineItem[]
+}
+
+model LineItem {
+  id        String  @id @default(cuid())
+  receiptId String
+  receipt   Receipt @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+  name      String
+  price     Float?
+  // LEBENSMITTEL | HAUSHALT | GASTRONOMIE | GESUNDHEIT | ELEKTRONIK | SONSTIGES
+  category  String  @default("SONSTIGES")
+}

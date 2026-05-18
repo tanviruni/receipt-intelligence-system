@@ -1,0 +1,38 @@
+# Node
+node_modules/
+dist/
+*.js.map
+.env
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite-journal
+
+# Uploads (runtime storage, not versioned)
+backend/uploads/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+frontend/.dart_tool/
+pubspec.lock
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Coverage
+coverage/

@@ -6,3 +6,18 @@ export async function createReceipt(imageUrl: string) {
     include: { items: true },
   });
 }
+
+export async function updateReceiptOcrText(id: string, rawOcrText: string) {
+  return prisma.receipt.update({
+    where: { id },
+    data: { rawOcrText, status: 'DONE' },
+    include: { items: true },
+  });
+}
+
+export async function markReceiptFailed(id: string) {
+  return prisma.receipt.update({
+    where: { id },
+    data: { status: 'FAILED' },
+  });
+}

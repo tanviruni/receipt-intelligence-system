@@ -1,3 +1,11 @@
+/**
+ * Parsing service — extracts structured data from raw OCR text.
+ *
+ * Uploaded receipts may be messy and inconsistent across vendors.
+ * Each extractor is a pure function so it can be tested in isolation.
+ * Fields that cannot be extracted are returned as null — never invented.
+ */
+
 export interface ParsedLineItem {
   name: string;
   price: number | null;

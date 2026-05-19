@@ -1,5 +1,6 @@
 import { prisma } from '../../db/client';
 import { ParsedReceipt } from '../../services/parsing/parsing.service';
+import { categorise } from '../../services/categorisation/categorisation.service';
 
 /** Creates a new receipt record with PENDING status immediately after upload. */
 export async function createReceipt(imageUrl: string) {
@@ -49,7 +50,7 @@ export async function updateReceiptWithParsedData(
         create: parsed.items.map((item) => ({
           name: item.name,
           price: item.price,
-          category: 'SONSTIGES',
+          category: categorise(item.name),
         })),
       },
     },

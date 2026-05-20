@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../domain/entities/receipt.dart';
+import '../bloc/receipt_list_bloc.dart';
 import 'status_badge.dart';
 
 class ReceiptCard extends StatelessWidget {
@@ -63,9 +65,44 @@ class ReceiptCard extends StatelessWidget {
                 ),
               const SizedBox(width: 12),
               StatusBadge(status: receipt.status),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: Colors.grey.shade400,
+                  size: 20,
+                ),
+                onPressed: () => _confirmDelete(context),
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete receipt?'),
+        content: const Text('This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.read<ReceiptListBloc>().add(
+                ReceiptListItemDeleted(id: receipt.id),
+              );
+            },
+            style: FilledButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

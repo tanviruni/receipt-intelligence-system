@@ -65,11 +65,11 @@ void main() {
           routes: [
             GoRoute(
               path: '/',
-              builder: (_, __) => Scaffold(body: ReceiptCard(receipt: receipt)),
+              builder: (_, _) => Scaffold(body: ReceiptCard(receipt: receipt)),
             ),
             GoRoute(
               path: '/receipts/:id',
-              builder: (_, __) => const Scaffold(body: Text('Detail')),
+              builder: (_, _) => const Scaffold(body: Text('Detail')),
             ),
           ],
         ),

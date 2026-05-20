@@ -44,7 +44,10 @@ class _ReceiptListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('RIS', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Receipt Intelligence System',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),

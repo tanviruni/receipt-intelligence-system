@@ -25,7 +25,7 @@ class RisApp extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return MaterialApp.router(
-            title: 'RIS',
+            title: 'Receipt Intelligence System',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(

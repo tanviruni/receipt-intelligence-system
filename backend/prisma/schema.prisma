@@ -19,6 +19,7 @@ model Receipt {
   status      String     @default("PENDING")
   createdAt   DateTime   @default(now())
   items       LineItem[]
+  imageHash  String?  @unique
 }
 
 model LineItem {

@@ -3,9 +3,9 @@ import { ParsedReceipt } from '../../services/parsing/parsing.service';
 import { categorise } from '../../services/categorisation/categorisation.service';
 
 /** Creates a new receipt record with PENDING status immediately after upload. */
-export async function createReceipt(imageUrl: string) {
+export async function createReceipt(imageUrl: string, imageHash: string) {
   return prisma.receipt.create({
-    data: { imageUrl, status: 'PENDING' },
+    data: { imageUrl, imageHash, status: 'PENDING' },
     include: { items: true },
   });
 }
@@ -76,4 +76,9 @@ export async function updateLineItemCategory(id: string, category: string) {
 /** Deletes a receipt and all its line items via cascading delete. */
 export async function deleteReceipt(id: string) {
   return prisma.receipt.delete({ where: { id } });
+}
+
+/** Finds a receipt by its image hash. */
+export async function findReceiptByHash(imageHash: string) {
+  return prisma.receipt.findUnique({ where: { imageHash } });
 }

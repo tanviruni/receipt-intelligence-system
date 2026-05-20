@@ -22,25 +22,33 @@ class ReceiptRemoteDatasource {
   }
 
   /// Uploads a receipt image as multipart/form-data.
+  /// Throws a readable Exception on 409 (duplicate image).
   Future<ReceiptModel> uploadReceipt(Uint8List bytes, String filename) async {
-    final formData = FormData.fromMap({
-      'image': MultipartFile.fromBytes(
-        bytes,
-        filename: filename,
-        contentType: DioMediaType(
-          'image',
-          filename.endsWith('.png') ? 'png' : 'jpeg',
+    try {
+      final formData = FormData.fromMap({
+        'image': MultipartFile.fromBytes(
+          bytes,
+          filename: filename,
+          contentType: DioMediaType(
+            'image',
+            filename.toLowerCase().endsWith('.png') ? 'png' : 'jpeg',
+          ),
         ),
-      ),
-    });
+      });
 
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/receipts',
-      data: formData,
-      options: Options(contentType: 'multipart/form-data'),
-    );
+      final response = await _dio.post<Map<String, dynamic>>(
+        '/receipts',
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
 
-    return ReceiptModel.fromJson(response.data!);
+      return ReceiptModel.fromJson(response.data!);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        throw Exception('This receipt has already been uploaded.');
+      }
+      rethrow;
+    }
   }
 
   Future<LineItemModel> updateLineItemCategory(

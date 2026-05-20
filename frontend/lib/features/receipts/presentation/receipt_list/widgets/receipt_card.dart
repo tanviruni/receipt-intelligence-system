@@ -29,16 +29,22 @@ class ReceiptCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Vendor name row
                     Text(
-                      receipt.vendorName ?? 'Unknown vendor',
+                      receipt.status == 'PENDING'
+                          ? 'Processing...'
+                          : receipt.vendorName ?? 'Unknown vendor',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
                     ),
                     const SizedBox(height: 4),
+                    // Date row
                     Text(
-                      receipt.date ?? receipt.createdAt.substring(0, 10),
+                      receipt.status == 'PENDING'
+                          ? 'Extracting receipt data...'
+                          : receipt.date ?? receipt.createdAt.substring(0, 10),
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 13,

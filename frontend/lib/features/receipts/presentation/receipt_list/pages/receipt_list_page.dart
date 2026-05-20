@@ -27,8 +27,16 @@ class _ReceiptListView extends StatelessWidget {
     final bloc = context.read<ReceiptListBloc>();
     showDialog(
       context: context,
-      builder: (_) =>
-          UploadPage(onSuccess: () => bloc.add(const ReceiptListRefreshed())),
+      builder: (_) => UploadPage(
+        onSuccess: () {
+          // Refresh immediately to show PENDING
+          bloc.add(const ReceiptListRefreshed());
+          // Refresh again after OCR completes (~5 seconds)
+          Future.delayed(const Duration(seconds: 5), () {
+            bloc.add(const ReceiptListRefreshed());
+          });
+        },
+      ),
     );
   }
 

@@ -7,9 +7,13 @@ import {
   findReceiptById,
   updateLineItemCategory,
   deleteReceipt,
+  findReceiptByHash,
 } from './receipt.repository';
 import { extractText } from '../../services/ocr/ocr.service';
 import { parseReceipt } from '../../services/parsing/parsing.service';
+import path from 'path';
+import crypto from 'crypto';
+import fs from 'fs/promises';
 
 /**
  * POST /receipts
@@ -25,7 +29,22 @@ export async function uploadReceipt(req: Request, res: Response, next: NextFunct
     }
 
     const imageUrl = `/uploads/${req.file.filename}`;
-    const receipt = await createReceipt(imageUrl);
+    const fileBuffer = await fs.readFile(
+      path.join(process.cwd(), 'uploads', req.file.filename),
+    );
+    const imageHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+
+    const existing = await findReceiptByHash(imageHash);
+    if (existing) {
+      // delete the just-uploaded duplicate file
+      await fs.unlink(path.join(process.cwd(), 'uploads', req.file.filename));
+      res
+        .status(409)
+        .json({ error: 'Duplicate receipt — this image has already been uploaded' });
+      return;
+    }
+
+    const receipt = await createReceipt(imageUrl, imageHash);
 
     extractText(req.file.filename)
       .then(async (rawOcrText) => {

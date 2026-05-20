@@ -1,5 +1,11 @@
 # Node
 node_modules/
+package-lock.json
+package.json
+backend/node_modules/
+pubspec.lock
+*.db
+backend/uploads/
 dist/
 *.js.map
 .env

@@ -10,15 +10,6 @@ export async function createReceipt(imageUrl: string) {
   });
 }
 
-/** Stores the raw OCR text without parsed fields. Kept for backwards compatibility. */
-export async function updateReceiptOcrText(id: string, rawOcrText: string) {
-  return prisma.receipt.update({
-    where: { id },
-    data: { rawOcrText, status: 'DONE' },
-    include: { items: true },
-  });
-}
-
 /** Marks a receipt as FAILED when OCR returns empty or throws. */
 export async function markReceiptFailed(id: string) {
   return prisma.receipt.update({
@@ -28,7 +19,7 @@ export async function markReceiptFailed(id: string) {
 }
 
 /**
- * Updates a receipt with the raw OCR text and all parsed fields.
+ * Updates a receipt with raw OCR text and all parsed fields.
  * Creates line items in the same transaction via Prisma's nested write.
  * Called after OCR and parsing complete successfully.
  */
@@ -56,4 +47,33 @@ export async function updateReceiptWithParsedData(
     },
     include: { items: true },
   });
+}
+
+/** Returns all receipts ordered by newest first, without line items. */
+export async function findAllReceipts() {
+  return prisma.receipt.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+/** Returns a single receipt with its line items, or null if not found. */
+export async function findReceiptById(id: string) {
+  return prisma.receipt.findUnique({
+    where: { id },
+    include: { items: true },
+  });
+}
+
+/** Updates the category of a single line item.
+ *  Called when the user manually corrects a category in the UI. */
+export async function updateLineItemCategory(id: string, category: string) {
+  return prisma.lineItem.update({
+    where: { id },
+    data: { category },
+  });
+}
+
+/** Deletes a receipt and all its line items via cascading delete. */
+export async function deleteReceipt(id: string) {
+  return prisma.receipt.delete({ where: { id } });
 }
